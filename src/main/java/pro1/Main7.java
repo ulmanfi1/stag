@@ -15,10 +15,16 @@ public class Main7 {
         String json = Api.getSpecializations(year);
         AdmissionList admissionList = new Gson().fromJson(json, AdmissionList.class);
 
+        Comparator<String> dateComparator = Comparator.comparing((String s) -> Integer.parseInt(s.split("\\.")[2]))
+                .thenComparing(s -> Integer.parseInt(s.split("\\.")[1])).
+                thenComparing(s -> Integer.parseInt(s.split("\\.")[0]));
 
 
-
-        return admissionList.prijimaciObor.stream().map(admission -> admission.eprDeadlinePrihlaska.value).filter(value -> value != null).distinct().collect(Collectors.joining(","));
+        return admissionList.prijimaciObor.stream()
+                .map(admission -> admission.eprDeadlinePrihlaska.value)
+                .filter(value -> value != null)
+                .distinct().sorted(dateComparator)
+                .collect(Collectors.joining(","));
     }
         //return "0";
         // return deadlineList.items.stream().sorted(Comparator.comparing(a -> a.value));
